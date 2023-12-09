@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# ## **The analysis involves evaluating and comparing the distance and optimization results obtained from the simulation model.**
+
+# **Number of cities vs Optimization graph**
+
 # In[6]:
 
 
@@ -28,7 +32,9 @@ plt.grid(True)
 plt.show()
 
 
-# In[7]:
+# **Number of Cities vs Path Length graph**
+
+# In[1]:
 
 
 import pandas as pd
