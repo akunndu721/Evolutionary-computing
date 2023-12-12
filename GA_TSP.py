@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # **The Traveling Sales Person**
+# # **The Traveling Sales Problem using genetic algorithm**
 # The problem is to minimize the distance travelled by a salesperson as they visit 
 # all the cities, visiting each city exactly once. 
 
-# In[1]:
+# In[9]:
 
 
 import random
@@ -200,7 +200,7 @@ def genetic_algorithm(num_of_generations, pop_size, cross_prob, mutation_rate, d
     return new_gen, costs_for_plot
 
 
-# In[2]:
+# In[10]:
 
 
 import numpy as np
@@ -240,48 +240,54 @@ def draw_cost_generation(y_list, generation, pop_size, cross_prob, mutation_rate
     plt.show()
 
 
-# In[3]:
+# In[11]:
 
 
-# Various Parameter combination to achieve best solution
+import random
+
+# Set the number of runs
+num_runs = 30
+
+# Genetic Algorithm Parameter Combinations
 parameter_combinations = [
     (700, 400, 0.9, 0.8),
+    # Add more combinations as needed
 ]
 
+# Loop through each parameter combination
 for params in parameter_combinations:
+    # Extract parameters
     numbers_of_generations, population_size, crossover_probability, mutation_rate = params
 
-    last_generation, y_axis = genetic_algorithm(
-        num_of_generations=numbers_of_generations,
-        pop_size=population_size,
-        cross_prob=crossover_probability,
-        mutation_rate=mutation_rate,
-        data_list=dataset
-    )
+    # Loop through multiple runs with different random seeds
+    for run in range(num_runs):
+        # Set a different random seed for each run
+        random_seed = run + 1
+        random.seed(random_seed)
 
-    best_solution = find_best(last_generation)
-    
-    best_cost_last_generation = last_generation[0].cost
-    best_path_last_generation = last_generation[0].chr_representation
-    print(f"The minimum tour length is: {best_cost_last_generation:.2f}")
-    print(f"The best path is: {best_path_last_generation}")
+        # Run genetic algorithm
+        last_generation, y_axis = genetic_algorithm(
+            num_of_generations=numbers_of_generations,
+            pop_size=population_size,
+            cross_prob=crossover_probability,
+            mutation_rate=mutation_rate,
+            data_list=dataset
+        )
 
-    draw_cost_generation(y_axis, numbers_of_generations, population_size, crossover_probability, mutation_rate)
+        # Find the best solution
+        best_solution = find_best(last_generation)
 
+        # Display results for each run
+        best_cost_last_generation = last_generation[0].cost
+        best_path_last_generation = last_generation[0].chr_representation
+        print(f"Run {run + 1} - Minimum tour length: {best_cost_last_generation:.2f}")
+        print(f"Run {run + 1} - Best path: {best_path_last_generation}")
 
-# In[4]:
-
-
-# Create pairs of consecutive coordinates based on path_order
-coordinate_pairs = [(best_path_last_generation[i], best_path_last_generation[i + 1]) for i in range(len(best_path_last_generation) - 2)]
-
-best_path_indices = [(x-1, y-1) for x, y in coordinate_pairs]
-# Display the resulting coordinate pairs and coordinates
-print("best_path_indice:")
-print(best_path_indices)
+        # Draw cost vs generation plot for each run
+        draw_cost_generation(y_axis, numbers_of_generations, population_size, crossover_probability, mutation_rate)
 
 
-# In[5]:
+# In[12]:
 
 
 import matplotlib.pyplot as plt

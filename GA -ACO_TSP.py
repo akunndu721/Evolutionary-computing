@@ -3,7 +3,7 @@
 
 # ## **Traveling Salesman Problem Solutions with Ant Colony Optimization and Genetic Algorithms.**
 
-# In[11]:
+# In[1]:
 
 
 import numpy as np
@@ -163,7 +163,7 @@ if __name__ == "__main__":
     print("ACO-GA Combined Solution:", result)
 
 
-# In[12]:
+# In[2]:
 
 
 import numpy as np
@@ -239,9 +239,91 @@ print("Best Path Indices:", best_path_indices)
 print("Best Path length:", np.round(result[1], 2))
 
 
+# In[3]:
+
+
+import numpy as np
+import re
+
+def euclidean_distance(coord1, coord2):
+    return np.sqrt((coord2[0] - coord1[0])**2 + (coord2[1] - coord1[1])**2)
+
+def read_coordinates_from_file(file_path):
+    coordinates = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            new_line = re.split(r'\s+', line.strip())
+            if new_line[0].isdigit():
+                id, x, y = new_line[0], float(new_line[1]), float(new_line[2])
+                coordinates.append((x, y))
+    return coordinates
+
+# Specify the path to the file containing coordinates
+#file_path = "burma14.tsp"
+#file_path = "eil51.tsp"
+#file_path = "berlin52.tsp"
+file_path = "eil76.tsp"
+#file_path = "lin105.tsp"
+#file_path = "bier127.tsp"
+#file_path = "gr137.tsp"
+#file_path = "rat195.tsp"
+#file_path = "lin318.tsp"
+#file_path = "rat575.tsp"
+
+# Read coordinates from the file
+coordinates = read_coordinates_from_file(file_path)
+
+# Create a distance matrix using NumPy array
+num_points = len(coordinates)
+distance_matrix = np.zeros((num_points, num_points))
+
+for i in range(num_points):
+    for j in range(num_points):
+        if i != j:
+            distance_matrix[i, j] = euclidean_distance(coordinates[i], coordinates[j])
+        else:
+            distance_matrix[i, j] = np.inf
+
+# Replace inf values with np.inf
+distance_matrix = np.where(np.isinf(distance_matrix), np.inf, distance_matrix)
+
+# Round the values in the distance array to 2 decimal places
+distances = np.round(distance_matrix, 2)
+
+print("Distance Matrix:")
+
+# Print column indices
+print("      ", end="")
+for i in range(num_points):
+    print(f"  {i:<6}", end="")
+print()
+
+# Print the matrix with row indices
+for i in range(num_points):
+    print(f"{i:2} |", end="")
+    for value in distances[i]:
+        print(f"{value:7.2f}", end=" ")
+    print()
+
+# Run ACOGA with 30 different random seeds
+for run in range(30):
+    # Set a different random seed for each run
+    random_seed = run + 1
+    np.random.seed(random_seed)
+
+    # ACOGA implementation using the read coordinates.
+    aco_ga = ACOGA(distances, n_ants=5, decay=0.95, alpha=1, beta=2, ga_population_size=400, ga_elite_size=2, ga_mutation_rate=0.8, ga_crossover_prob=0.9, generations=1000)
+    result = aco_ga.run()
+
+    best_path_indices = result[0]
+
+    print(f"\nRun {run + 1} - Best Path Indices: {best_path_indices}")
+    print(f"Run {run + 1} - Best Path Length: {np.round(result[1], 2)}")
+
+
 # ## **Calculating Best Path and Plot**
 
-# In[3]:
+# In[4]:
 
 
 import matplotlib.pyplot as plt
@@ -287,7 +369,7 @@ plt.show()
 
 # ## **Plotting Generation vs Execution time and Generation vs Best Path Length**
 
-# In[4]:
+# In[ ]:
 
 
 import time
@@ -345,7 +427,7 @@ plt.show()
 
 # ## **Plotting Best Path on different Parameters**
 
-# In[5]:
+# In[ ]:
 
 
 # Lists to store data for plotting
@@ -431,7 +513,7 @@ for params in parameter_combinations:
 
 # ## **Plotting avg-avg and max-avg versus number of generations**
 
-# In[16]:
+# In[ ]:
 
 
 import numpy as np
@@ -523,7 +605,7 @@ plt.grid(True)
 plt.show()
 
 
-# In[26]:
+# In[ ]:
 
 
 import numpy as np
